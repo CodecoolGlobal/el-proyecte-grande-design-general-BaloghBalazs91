@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Training extends Model
 {
@@ -25,6 +26,7 @@ class Training extends Model
         return [
             'participants' => 'array',
             'created_at' => 'datetime',
+            'start' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
@@ -40,5 +42,10 @@ class Training extends Model
     public function trainerOfTraining(): BelongsTo
     {
         return $this->belongsTo(Trainer::class, 'id_trainer');
+    }
+
+    public function participants(): BelongsToMany
+    {
+        return $this->belongsToMany(Trainee::class);
     }
 }

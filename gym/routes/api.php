@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
 
 });
+
+Route::get('/trainings', [\App\Http\Controllers\TrainingController::class, 'getAll']);
