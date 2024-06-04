@@ -9,10 +9,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Trainee extends User
+class Subscription
 {
     protected $fillable = [
-        'subscription_id',
+        'type',
+        'start',
+        'duration',
+        'remaining_occasions'
     ];
 
     protected function casts(): array
@@ -20,9 +23,5 @@ class Trainee extends User
         return [
 
         ];
-    }
-    public function subscriptionOfTrainee(): BelongsTo
-    {
-        return $this->belongsTo(Subscription::class);
     }
 }

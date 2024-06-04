@@ -2,7 +2,6 @@
 
 
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\MailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -16,9 +15,12 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return request()->user();
 });
+Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    Route::post('/login', [UserController::class, 'login']);
 });
+
+
 
 Route::get('/trainings', [\App\Http\Controllers\TrainingController::class, 'getAll']);
