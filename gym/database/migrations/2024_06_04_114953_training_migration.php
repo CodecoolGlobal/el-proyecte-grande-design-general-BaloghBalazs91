@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_trainer')->nullable();
             $table->unsignedBigInteger('id_room')->nullable();
             $table->integer('capacity');
-            $table->
+            $table->json('participants')->nullable();
             $table->timestamps();
         });
     }

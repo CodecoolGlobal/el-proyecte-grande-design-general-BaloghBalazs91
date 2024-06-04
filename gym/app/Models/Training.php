@@ -30,22 +30,22 @@ class Training extends Model
             'updated_at' => 'datetime',
         ];
     }
-    public function trainingMethodOfTraining(): BelongsTo
+    public function trainingMethod(): BelongsTo
     {
         return $this->belongsTo(TrainingMethod::class, 'id_training_method');
     }
 
-    public function roomOfTraining(): BelongsTo
+    public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class, 'id_room');
     }
-    public function trainerOfTraining(): BelongsTo
+    public function trainer(): BelongsTo
     {
         return $this->belongsTo(Trainer::class, 'id_trainer');
     }
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(Trainee::class);
+        return $this->belongsToMany(Trainee::class, '');
     }
 }
