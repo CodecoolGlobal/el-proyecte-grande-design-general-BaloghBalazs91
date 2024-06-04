@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainer', function (Blueprint $table) {
+        Schema::create('subscription', function (Blueprint $table) {
             $table->id();
-            $table->json('training_method_id_list');
-            $table->json('vote_list');
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
-
+            $table->string('type');
+            $table->string('start');
+            $table->string('duration');
+            $table->integer('remaining_occasions');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('trainer');
+        Schema::dropIfExists('subscription');
     }
 };

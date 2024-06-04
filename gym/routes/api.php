@@ -16,7 +16,10 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return request()->user();
 });
+Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    Route::post('/login', [UserController::class, 'login']);
 });
+
+
