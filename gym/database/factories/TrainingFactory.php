@@ -22,23 +22,12 @@ class TrainingFactory extends Factory
     public function definition(): array
     {
         return [
-            'start' => fake()->dateTimeBetween('now', '+1 year'),
+            'start' => fake()->dateTimeBetween('now', '+6 months'),
             'duration' => fake()->randomDigitNotNull(),
             'capacity' => fake()->randomDigitNotNull(),
-            'room_id' => Room::factory(),
-            'user_id' => User::factory(),
-            'training_method_id' => TrainingMethod::factory()
+            'room_id' => \Illuminate\Support\Facades\DB::table('rooms')->inRandomOrder()->first()->id,
+            'user_id' => \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id,
+            'training_method_id' => \Illuminate\Support\Facades\DB::table('training_methods')->inRandomOrder()->first()->id
         ];
     }
-
-    public function configure()
-    {
-        $existingUserIds = DB::table('users')->inRandomOrder()->take(5)->pluck('id');
-
-        return $this->afterCreating(function (Training $training) use ($existingUserIds) {
-            $training->participants()->attach($existingUserIds);
-        });
-    }
-
-
 }

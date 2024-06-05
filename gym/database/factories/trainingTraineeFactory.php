@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class trainingTraineeFactory extends Factory
 {
+
+    protected $model = null;
+
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +21,8 @@ class trainingTraineeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'training_id'=> \Illuminate\Support\Facades\DB::table('trainings')->inRandomOrder()->first()->id,
+            'user_id'=> \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id
         ];
     }
 }
