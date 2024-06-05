@@ -10,7 +10,7 @@ class Room extends Model
         use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     protected $hidden = [
@@ -21,6 +21,11 @@ class Room extends Model
         return [
 
         ];
+    }
+
+    public function training()
+    {
+        return $this->hasMany(Training::class);
     }
 
 }

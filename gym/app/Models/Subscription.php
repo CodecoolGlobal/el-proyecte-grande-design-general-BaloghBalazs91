@@ -12,11 +12,15 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Subscription extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'type',
         'start',
         'duration',
-        'remaining_occasions'
+        'remaining_occasions',
+        'user_id'
     ];
 
     protected function casts(): array
@@ -24,5 +28,10 @@ class Subscription extends Model
         return [
 
         ];
+    }
+
+    public function trainee() :BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

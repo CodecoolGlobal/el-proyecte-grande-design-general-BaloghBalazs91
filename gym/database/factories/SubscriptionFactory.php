@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +18,11 @@ class SubscriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            'type',
-            'start',
-            'duration',
-            'remaining_occasions'
+            'type' => fake()->text(),
+            'start' => fake()->dateTime(),
+            'duration' => fake()->randomDigitNotNull(),
+            'remaining_occasions' => fake()->randomDigitNotNull(),
+            'user_id' => \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id,
         ];
     }
 }

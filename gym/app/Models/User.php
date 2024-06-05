@@ -24,7 +24,6 @@ class User extends Authenticatable
         'email',
         'password',
         'vote_list',
-        'subscription_id',
         'role'
     ];
 
@@ -51,11 +50,12 @@ class User extends Authenticatable
         ];
     }
 
+    # A trainer has many training methods
     public function trainingMethods(): BelongsToMany
     {
         return $this->belongsToMany(
             TrainingMethod::class,
-            'training_method_user',
+            'training_method_trainer',
             'user_id',
             'training_method_id');
     }
@@ -70,7 +70,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Training::class,
-            'training_user',
+            'training_trainee',
             'user_id',
             'training_id'
         );

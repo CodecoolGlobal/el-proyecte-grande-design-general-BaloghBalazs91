@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TrainingMethod>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Room>
  */
-class TrainingMethodFactory extends Factory
+class RoomFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +17,7 @@ class TrainingMethodFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'spinning',
-            'description' => fake()->text(),
+            'name' => fake()->colorName()
         ];
     }
 }
