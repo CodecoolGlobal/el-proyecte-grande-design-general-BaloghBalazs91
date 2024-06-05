@@ -15,8 +15,7 @@ return new class extends Migration
         Schema::create('trainee', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('subscription_id')->unsigned();
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('subscription_id')->references('id')->on('subscription')->onDelete('cascade');
         });

@@ -18,6 +18,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->json('vote_list');
+            $table->string('role');
+            $table->foreignIdFor(\App\Models\Subscription::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Training::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
 

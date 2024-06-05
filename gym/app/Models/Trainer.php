@@ -4,27 +4,39 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Trainer extends User
 {
+    use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+
     protected $fillable = [
-        'training_method_id_list',
         'vote_list'
     ];
 
     protected function casts(): array
     {
         return [
-            'training_method_id_list' => 'array',
             'vote_list' => 'array'
         ];
     }
-    public function trainingMethodsOfTrainer(): BelongsToMany
+    public function trainingMethods(): BelongsToMany
     {
-        return $this->belongsToMany(TrainingMethod::class);
+        return $this->belongsToMany(
+            TrainingMethod::class,
+            'training_method_trainer',
+            'trainer_id',
+            'training_method_id');
+    }
+
+    public function trainings()
+    {
+        return $this->hasMany(Training::class);
     }
 }

@@ -10,23 +10,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class TrainingMethod extends Model
 {
     use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+
     protected $fillable = [
         'name',
         'description',
-        'trainers',
     ];
     protected $hidden = [
     ];
     protected function casts(): array
     {
         return [
-            'trainers' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
-    public function trainersOfTrainingMethod(): BelongsToMany
+    public function trainers(): BelongsToMany
     {
-        return $this->belongsToMany(Trainer::class);
+        return $this->belongsToMany(
+            User::class,
+            'training_method_user',
+            'training_method_id',
+            'user_id');
     }
+
 }

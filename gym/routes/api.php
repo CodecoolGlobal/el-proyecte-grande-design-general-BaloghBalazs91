@@ -24,3 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 Route::get('/trainings', [\App\Http\Controllers\TrainingController::class, 'getAll']);
+Route::get('/training-methods', [\App\Http\Controllers\TrainingMethodController::class, 'getAll']);
+Route::get('/training-methods/{id}', [\App\Http\Controllers\TrainingMethodController::class, 'getById']);
+Route::get('/training-methods/{id}/trainers', [App\Http\Controllers\TrainingMethodController::class, 'getTrainersById']);

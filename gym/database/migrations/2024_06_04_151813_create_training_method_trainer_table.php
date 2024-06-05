@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Trainer;
+use App\Models\TrainingMethod;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,12 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscription', function (Blueprint $table) {
+        Schema::create('training_method_trainer', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->string('start');
-            $table->string('duration');
-            $table->integer('remaining_occasions');
+            $table->foreignIdFor(TrainingMethod::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscription');
+        Schema::dropIfExists('training_method_trainer');
     }
 };

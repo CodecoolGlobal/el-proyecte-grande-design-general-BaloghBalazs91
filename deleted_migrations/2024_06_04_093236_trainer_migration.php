@@ -12,12 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainer', function (Blueprint $table) {
+        Schema::create('trainers', function (Blueprint $table) {
             $table->id();
-            $table->json('training_method_id_list');
+            $table->string('name');
+            $table->string('email');
+            $table->string('password');
             $table->json('vote_list');
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
         });
     }

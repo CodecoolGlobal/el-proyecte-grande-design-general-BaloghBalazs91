@@ -12,6 +12,11 @@ class TrainingController extends Controller
         $trainings = Training::all() ?? [];
 
         return response()->json($trainings);
+    }
 
+    public function getById($id)
+    {
+        $training = Training::query()->find($id);
+        return response()->json($training);
     }
 }

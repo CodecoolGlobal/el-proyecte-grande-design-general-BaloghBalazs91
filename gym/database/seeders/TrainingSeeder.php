@@ -17,7 +17,7 @@ class TrainingSeeder extends Seeder
     {
         DB::table('training')->insert([
             [
-                'id_training_method' => $users[0],
+                'id_training_method' => '[1,2]',
                 'start' => new DateTime(),
                 'duration' => 120,
                 'message' => 'Hello bence, welcome to our service!',
@@ -27,7 +27,7 @@ class TrainingSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'id_training_method' => $users[0],
+                'id_training_method' => '[2,3]',
                 'start' => new DateTime(),
                 'duration' => 120,
                 'message' => 'Hello bence, welcome to our service!',

@@ -11,7 +11,7 @@ class Training extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_training_method',
+
         'start',
         'duration',
         'id_trainer',
@@ -30,22 +30,27 @@ class Training extends Model
             'updated_at' => 'datetime',
         ];
     }
-    public function trainingMethod(): BelongsTo
+    public function trainingMethod()
     {
-        return $this->belongsTo(TrainingMethod::class, 'id_training_method');
+        return $this->hasOne(TrainingMethod::class);
     }
 
-    public function room(): BelongsTo
+    public function room()
     {
-        return $this->belongsTo(Room::class, 'id_room');
+        return $this->hasOne(Room::class);
     }
     public function trainer(): BelongsTo
     {
-        return $this->belongsTo(Trainer::class, 'id_trainer');
+        return $this->belongsTo(User::class, 'id_trainer');
     }
 
-    public function participants(): BelongsToMany
+    public function participants() : BelongsToMany
     {
-        return $this->belongsToMany(Trainee::class, '');
+        return $this->belongsToMany(
+            User::class,
+            'training_user',
+            'training_id',
+            'user_id'
+        );
     }
 }

@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('training', function (Blueprint $table) {
+        Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->dateTime('start');
             $table->integer('duration');
-            $table->unsignedBigInteger('id_trainer')->nullable();
-            $table->unsignedBigInteger('id_room')->nullable();
+            $table->foreignIdFor(\App\Models\Room::class);
             $table->integer('capacity');
-            $table->json('participants')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Training');
+        Schema::dropIfExists('trainings');
     }
 };

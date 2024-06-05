@@ -12,6 +12,7 @@ class Room extends Model
     protected $fillable = [
         'name'
     ];
+
     protected $hidden = [
     ];
 
@@ -21,11 +22,5 @@ class Room extends Model
 
         ];
     }
-
-    public function trainingOfRoom(): BelongsTo
-    {
-        return $this->belongsTo(Training::class, 'id_training');
-    }
-
 
 }

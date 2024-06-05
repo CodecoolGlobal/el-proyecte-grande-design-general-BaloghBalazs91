@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('training_methods', function (Blueprint $table) {
-
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
+            $table->string('type');
+            $table->string('start');
+            $table->string('duration');
+            $table->integer('remaining_occasions');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('training_method');
+        Schema::dropIfExists('subscription');
     }
 };
