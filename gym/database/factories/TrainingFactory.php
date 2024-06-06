@@ -23,11 +23,11 @@ class TrainingFactory extends Factory
     {
         return [
             'start' => fake()->dateTimeBetween('now', '+6 months'),
-            'duration' => fake()->randomDigitNotNull(),
-            'capacity' => fake()->randomDigitNotNull(),
-            'room_id' => \Illuminate\Support\Facades\DB::table('rooms')->inRandomOrder()->first()->id,
-            'user_id' => \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id,
-            'training_method_id' => \Illuminate\Support\Facades\DB::table('training_methods')->inRandomOrder()->first()->id
+            'duration' => fake()->randomElement([60,90,120]),
+            'capacity' => rand(6,15),
+            'room_id' => rand(1,3),
+            'trainer_id' => rand(1,3),
+            'training_method_id' => rand(1,3)
         ];
     }
 }

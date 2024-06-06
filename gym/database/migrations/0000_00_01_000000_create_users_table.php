@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->json('vote_list');
+            $table->json('vote_list')->nullable();
             $table->string('role');
             $table->timestamps();
         });

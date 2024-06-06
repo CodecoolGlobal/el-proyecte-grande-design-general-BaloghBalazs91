@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('start');
             $table->integer('duration');
-            $table->foreignIdFor(\App\Models\User::class)->nullable();              # a training belongs to one trainer
+            $table->foreignIdFor(\App\Models\User::class, 'trainer_id')->nullable();    # a training belongs to one trainer
             $table->foreignIdFor(\App\Models\TrainingMethod::class)->nullable();    # a training belongs to one method
             $table->foreignIdFor(\App\Models\Room::class)->nullable();              # a training belongs to one room
             $table->integer('capacity');

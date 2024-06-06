@@ -26,12 +26,19 @@ class Subscription extends Model
     protected function casts(): array
     {
         return [
-
+            'start' => 'datetime'
         ];
     }
 
     public function trainee() :BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function isActive() :bool
+    {
+        $end = $this->start->copy()->addDays($this->duration); // Assuming $this->duration is in days
+
+        return now()->lessThan($end);
     }
 }

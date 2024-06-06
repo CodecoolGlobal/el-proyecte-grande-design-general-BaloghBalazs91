@@ -45,7 +45,7 @@ class TrainingMethod extends Model
     # A training method has many trainings.
     public function trainings()
     {
-        return $this->hasMany(trainingMethod::class);
+        return $this->hasMany(Training::class);
     }
 
 }

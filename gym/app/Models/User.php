@@ -71,7 +71,7 @@ class User extends Authenticatable
         return $this->belongsToMany(
             Training::class,
             'training_trainee',
-            'user_id',
+            'trainee_id',
             'training_id'
         );
     }
@@ -79,6 +79,6 @@ class User extends Authenticatable
     # Trainer has many trainings
     public function trainings()
     {
-        return $this->hasMany(Training::class);
+        return $this->hasMany(Training::class, 'trainer_id');
     }
 }

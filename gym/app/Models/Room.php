@@ -23,7 +23,7 @@ class Room extends Model
         ];
     }
 
-    public function training()
+    public function trainings()
     {
         return $this->hasMany(Training::class);
     }

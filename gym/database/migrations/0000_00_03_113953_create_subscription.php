@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('start');
             $table->string('duration');
             $table->integer('remaining_occasions');
-            $table->foreignIdFor(\App\Models\User::class);
+            $table->foreignIdFor(\App\Models\User::class, 'user_id');
             $table->timestamps();
         });
     }

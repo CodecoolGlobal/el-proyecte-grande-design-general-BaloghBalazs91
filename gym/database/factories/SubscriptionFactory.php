@@ -17,11 +17,14 @@ class SubscriptionFactory extends Factory
      */
     public function definition(): array
     {
+        $startOfTheYear = now()->startOfYear();
+        $now = now();
+
         return [
-            'type' => fake()->text(),
-            'start' => fake()->dateTime(),
-            'duration' => fake()->randomDigitNotNull(),
-            'remaining_occasions' => fake()->randomDigitNotNull(),
+            'type' => fake()->randomElement(['box', 'yoga', 'spinning', 'all']),
+            'start' => fake()->dateTimeBetween($startOfTheYear, $now),
+            'duration' => 30,
+            'remaining_occasions' => 10,
             'user_id' => \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id,
         ];
     }

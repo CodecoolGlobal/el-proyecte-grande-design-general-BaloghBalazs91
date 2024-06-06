@@ -14,7 +14,7 @@ class Training extends Model
 
         'start',
         'duration',
-        'user_id',
+        'trainer_id',
         'room_id',
         'capacity',
         'training_method_id'
@@ -24,7 +24,6 @@ class Training extends Model
     protected function casts(): array
     {
         return [
-            'participants' => 'array',
             'created_at' => 'datetime',
             'start' => 'datetime',
             'updated_at' => 'datetime',
@@ -43,16 +42,16 @@ class Training extends Model
     # A training belongs to one user (trainer).
     public function trainer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    public function participants() : BelongsToMany
+    public function trainees() : BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
             'training_trainee',
             'training_id',
-            'user_id'
+            'trainee_id'
         );
     }
 }
