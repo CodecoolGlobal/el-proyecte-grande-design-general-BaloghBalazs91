@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mail;
 use App\Models\User;
+use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class UserController extends Controller
             'token' => $token
         ];
 
-        return view('home');
+        return view('profile');
     }
 
     public function  registerTrainee(Request $request)
@@ -56,11 +57,18 @@ class UserController extends Controller
     }
 
 
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+        return response()->json(['message' => `user:{$user->name}`],200);
+    }
+
     public function profileData()
     {
         if(Auth::check()){
             $user = Auth::user();
-            return response()->json(['emails' => $user],200);
+            Log::info($user);
+            return response()->json($user,200);
         }else{
             return response()->json(['message'=>"Unauthorized"],401);
         }
