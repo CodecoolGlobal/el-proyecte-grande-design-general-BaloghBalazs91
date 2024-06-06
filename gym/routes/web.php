@@ -17,8 +17,8 @@ Route::get('register', function () {
 
 Route::post('register', [UserController::class, 'registerTrainee']);
 
-Route::middleware('auth')->group(function () {
-    Route::get('profile', [UserController::class, 'profileData'])->name('profile');
+Route::middleware('auth:Sanctum')->group(function () {
+    Route::get('profile', [UserController::class, 'profile'])->name('profile');
 });
 
 

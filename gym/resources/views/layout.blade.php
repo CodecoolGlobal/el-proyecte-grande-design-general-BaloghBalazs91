@@ -22,11 +22,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('login') }}">Login</a>
                 </li>
-                @auth
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profile') }}">Profile</a>
                     </li>
-                @endauth
+
             </ul>
         </div>
     </div>
