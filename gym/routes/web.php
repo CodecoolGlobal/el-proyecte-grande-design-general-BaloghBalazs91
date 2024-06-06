@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/',function (){return view('home');})->name('home');
 
 Route::get('login', function () {
@@ -17,8 +18,8 @@ Route::get('register', function () {
 
 Route::post('register', [UserController::class, 'registerTrainee']);
 
-Route::middleware('auth:Sanctum')->group(function () {
-    Route::get('profile', [UserController::class, 'profile'])->name('profile');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
 });
 
 

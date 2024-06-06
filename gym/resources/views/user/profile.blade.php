@@ -6,8 +6,8 @@
             <div class="card">
             <div class="card-body">
                 <h5 class="card-title">User Data</h5>
-                <p class="card-text">Name : {{$name}}</p>
-                <p class="card-text">Email : {{$email}}</p>
+                <p class="card-text">Name : {{$user->name}}</p>
+                <p class="card-text">Email : {{$user->email}}</p>
             </div>
             </div>
     </div>

@@ -17,7 +17,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
-
+        Log::info($request);
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
                 'message' => ['These credentials do not match our records.']
@@ -30,7 +30,7 @@ class UserController extends Controller
             'token' => $token
         ];
 
-        return view('profile');
+        return view('user.profile',['user'=>$user]);
     }
 
     public function  registerTrainee(Request $request)
