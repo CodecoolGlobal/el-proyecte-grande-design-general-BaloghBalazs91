@@ -23,7 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'vote_list',
         'subscription_id',
         'role'
     ];
@@ -50,6 +49,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected $attributes = [
+        'vote_list',
+    ];
 
     public function trainingMethods(): BelongsToMany
     {
@@ -81,4 +84,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Training::class);
     }
+
+
 }

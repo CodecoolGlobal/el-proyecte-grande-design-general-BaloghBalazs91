@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -30,7 +33,7 @@ class UserController extends Controller
         return response($response, 201);
     }
 
-    public function register(Request $request)
+    public function  registerTrainee(Request $request)
     {
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
@@ -47,8 +50,21 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => "trainee"
         ]);
 
         return response()->json(['message' => 'User registered successfully'], 201);
     }
+
+
+    public function profileData()
+    {
+        if(Auth::check()){
+            $user = Auth::user();
+            return response()->json(['emails' => $user],200);
+        }else{
+            return response()->json(['message'=>"Unauthorized"],401);
+        }
+    }
+
 }
