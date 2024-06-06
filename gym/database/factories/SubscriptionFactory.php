@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,11 +17,15 @@ class SubscriptionFactory extends Factory
      */
     public function definition(): array
     {
+        $startOfTheYear = now()->startOfYear();
+        $now = now();
+
         return [
-            'type',
-            'start',
-            'duration',
-            'remaining_occasions'
+            'type' => fake()->randomElement(['box', 'yoga', 'spinning', 'all']),
+            'start' => fake()->dateTimeBetween($startOfTheYear, $now),
+            'duration' => 30,
+            'remaining_occasions' => 10,
+            'user_id' => \Illuminate\Support\Facades\DB::table('users')->inRandomOrder()->first()->id,
         ];
     }
 }

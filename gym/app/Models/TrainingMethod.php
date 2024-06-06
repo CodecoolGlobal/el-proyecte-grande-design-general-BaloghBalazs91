@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Seeders\trainingMethodTrainer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,13 +31,21 @@ class TrainingMethod extends Model
             'updated_at' => 'datetime',
         ];
     }
+
+    # A training method has many trainers
     public function trainers(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
-            'training_method_user',
+            'training_method_trainer',
             'training_method_id',
             'user_id');
+    }
+
+    # A training method has many trainings.
+    public function trainings()
+    {
+        return $this->hasMany(Training::class);
     }
 
 }

@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'subscription_id',
+        'vote_list',
         'role'
     ];
 
@@ -50,15 +50,12 @@ class User extends Authenticatable
         ];
     }
 
-    protected $attributes = [
-        'vote_list',
-    ];
-
+    # A trainer has many training methods
     public function trainingMethods(): BelongsToMany
     {
         return $this->belongsToMany(
             TrainingMethod::class,
-            'training_method_user',
+            'training_method_trainer',
             'user_id',
             'training_method_id');
     }
@@ -73,8 +70,8 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Training::class,
-            'training_user',
-            'user_id',
+            'training_trainee',
+            'trainee_id',
             'training_id'
         );
     }
@@ -82,8 +79,6 @@ class User extends Authenticatable
     # Trainer has many trainings
     public function trainings()
     {
-        return $this->hasMany(Training::class);
+        return $this->hasMany(Training::class, 'trainer_id');
     }
-
-
 }

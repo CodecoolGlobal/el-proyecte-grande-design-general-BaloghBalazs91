@@ -14,43 +14,44 @@ class Training extends Model
 
         'start',
         'duration',
-        'id_trainer',
-        'id_room',
+        'trainer_id',
+        'room_id',
         'capacity',
-        'participants'
+        'training_method_id'
     ];
     protected $hidden = [
     ];
     protected function casts(): array
     {
         return [
-            'participants' => 'array',
             'created_at' => 'datetime',
             'start' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
-    public function trainingMethod()
+    public function trainingMethod():BelongsTo
     {
-        return $this->hasOne(TrainingMethod::class);
+        return $this->belongsTo(TrainingMethod::class);
     }
 
-    public function room()
+    public function room() :BelongsTo
     {
-        return $this->hasOne(Room::class);
+        return $this->belongsTo(Room::class);
     }
+
+    # A training belongs to one user (trainer).
     public function trainer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_trainer');
+        return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    public function participants() : BelongsToMany
+    public function trainees() : BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
-            'training_user',
+            'training_trainee',
             'training_id',
-            'user_id'
+            'trainee_id'
         );
     }
 }
