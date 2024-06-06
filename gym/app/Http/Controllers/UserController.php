@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $user = User::where('name', $request->name)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
@@ -24,13 +24,12 @@ class UserController extends Controller
         }
 
         $token = $user->createToken('my-app-token')->plainTextToken;
-
         $response = [
             'user' => $user,
             'token' => $token
         ];
 
-        return response($response, 201);
+        return view('home');
     }
 
     public function  registerTrainee(Request $request)
@@ -53,7 +52,7 @@ class UserController extends Controller
             'role' => "trainee"
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        return view('home');
     }
 
 
