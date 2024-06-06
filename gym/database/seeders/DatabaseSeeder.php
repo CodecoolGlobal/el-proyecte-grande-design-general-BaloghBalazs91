@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
@@ -56,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => 'Balázs',
                     'email' => 'b@b',
-                    'password' => 'password',
+                    'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'remember_token' => Str::random(10),
                     'role' => 'trainer',
@@ -66,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => 'Kitti',
                     'email' => 'k@k',
-                    'password' => 'password',
+                    'password' =>  Hash::make('password'),
                     'email_verified_at' => now(),
                     'remember_token' => Str::random(10),
                     'role' => 'trainer',
@@ -75,7 +76,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name' => 'Bence',
                     'email' => 'b@be',
-                    'password' => 'password',
+                    'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'remember_token' => Str::random(10),
                     'role' => 'trainer',
