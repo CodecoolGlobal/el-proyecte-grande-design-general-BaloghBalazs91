@@ -25,18 +25,21 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'box',
                 'description' => 'In this class the trainees follow the instructor of a professional boxer trainer, which includes sparring and strengthening.',
+                'image' => 'training-method-box-card.jpg',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'yoga',
                 'description' => 'In yoga, practitioners has the chance to stretch, strengthen and relax.',
+                'image' => 'training-method-yoga-card.jpg',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'spinning',
                 'description' => 'In spinning, bikers can spin at different intensity levels, and listen to loud music.',
+                'image' => 'training-method-spinning-card.jpg',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
