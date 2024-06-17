@@ -16,11 +16,14 @@ Route::get('register', function () {
 
 Route::post('login', [UserController::class, 'login']);
 
+
 Route::post('register', [UserController::class, 'registerTrainee']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
+
 
 Route::get('training-methods', [\App\Http\Controllers\TrainingMethodController::class, 'getAll']);
 Route::get('training-methods/{training_method_name}', [\App\Http\Controllers\TrainingMethodController::class, 'getByName']);

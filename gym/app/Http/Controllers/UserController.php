@@ -6,6 +6,7 @@ use App\Models\Mail;
 use App\Models\User;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Auth\RequestGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,21 +17,31 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-        Log::info($request);
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => ['These credentials do not match our records.']
-            ], 404);
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+            $token = $user->createToken('my-app-token')->plainTextToken;
+            $response = [
+                'user' => $user,
+                'token' => $token
+            ];
+
+            // Redirect after successful login
+            return view('user.profile', compact('user'));
         }
 
-        $token = $user->createToken('my-app-token')->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return view('user.profile',['user'=>$user]);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+    public function logout(Request $request){
+        Log::info('Attempting to logout user.');
+        auth()->guard('web')->logout();
+        Log::info('User logged out.');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 
     public function  registerTrainee(Request $request)
@@ -59,8 +70,9 @@ class UserController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user();
-        return response()->json(['message' => `user:{$user->name}`],200);
+        $user = Auth::user();
+        Log::info($user);
+        return view('user.profile', compact('user'));
     }
 
     public function profileData()
