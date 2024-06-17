@@ -31,6 +31,7 @@ Route::get('training-methods/{training_method_name}', [\App\Http\Controllers\Tra
 // Trainings
 Route::get('trainings', [\App\Http\Controllers\TrainingController::class, 'getAll']);
 Route::get('trainings/{id}', [\App\Http\Controllers\TrainingController::class, 'getById']);
+Route::get('trainings/booked-by-user/{user_id}', [\App\Http\Controllers\TrainingController::class, 'getByUserId']);
 
 // Trainers
 Route::get('trainers', [\App\Http\Controllers\TrainerController::class, 'getAll']);

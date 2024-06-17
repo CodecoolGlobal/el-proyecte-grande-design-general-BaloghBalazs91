@@ -26,4 +26,14 @@ class TrainingController extends Controller
         $training = Training::query()->find($id);
         return response()->json($training);
     }
+
+    public function getByUserId(int $user_id)
+    {
+        $trainings = Training::whereHas('trainees', function ($query) use ($user_id) {
+            $query->where('users.id', $user_id);
+        })->with('trainees')->get();
+
+        //$trainings = Training::query()->where('user_id', $user_id)->get();
+        return response()->json($trainings);
+    }
 }
