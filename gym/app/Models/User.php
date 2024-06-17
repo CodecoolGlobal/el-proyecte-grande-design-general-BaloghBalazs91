@@ -47,6 +47,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'vote_list' => 'array'
         ];
     }
 
@@ -80,5 +81,11 @@ class User extends Authenticatable
     public function trainings()
     {
         return $this->hasMany(Training::class, 'trainer_id');
+    }
+
+    public function voteRate()
+    {
+        $voteList = is_array($this->vote_list) ? $this->vote_list : [];
+        return count($voteList) > 0 ? array_sum($voteList) / count($voteList) : 0;
     }
 }
