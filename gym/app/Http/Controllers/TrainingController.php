@@ -15,7 +15,7 @@ class TrainingController extends Controller
 
         $currentDate = Carbon::now();
         $startOfWeek = $currentDate->addWeeks((int)$week)->startOfWeek()->startOfDay()->toDateTimeString();
-        $endOfWeek = $currentDate->addWeeks((int)$week)->endOfWeek()->endOfDay()->toDateTimeString();
+        $endOfWeek = $currentDate->endOfWeek()->endOfDay()->toDateTimeString();
 
         $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])->get();
 
@@ -39,7 +39,7 @@ class TrainingController extends Controller
 
     public function joinTrainingById( int $userId, int $trainingId){
         $user = User::query()->find($userId);
-        $training = Training::query()->find($trainingId)->with('trainees')->first();
+        $training = Training::with('trainees')->find($trainingId);
 
         if ($training === null || $user === null) {
             return response()->json(['message' => 'Training or user not found.'], 404);
@@ -53,7 +53,7 @@ class TrainingController extends Controller
             return response()->json(['message' => 'User is already participating in this training.'], 422);
         }
 
-        $training->trainees()->attach([$user]);
+        $training->trainees()->attach($userId);
         return response()->json(['message' => 'User has been successfully added to the training.']);
     }
 }

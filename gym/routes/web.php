@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     # to implement
 });
-    Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
+Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
 Route::get('training-methods', [TrainingMethodController::class, 'getAll']);
 Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName']);
@@ -39,4 +39,5 @@ Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'ge
 // Trainers
 Route::get('trainers', [TrainerController::class, 'getAll']);
 Route::get('trainers/{id}', [TrainerController::class, 'getById']);
+#Route::post('trainers/create', [TrainerController::class, 'create']);
 
