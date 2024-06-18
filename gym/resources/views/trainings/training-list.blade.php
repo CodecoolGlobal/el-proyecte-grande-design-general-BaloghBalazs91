@@ -1,15 +1,16 @@
 @extends('layout')
 
-@section('title','Training list')
+@section('title', 'Training list')
 
 @section('content')
     <h1>Trainings</h1>
     <div class="container">
         <div class="row g-2">
             @foreach ($trainings as $training)
+                @dump($training->training_method) <!-- Debugging Line -->
                 <x-training-card
-                    training_method="{{ $training->training_method }}"
-                    start="{{ $training->start }}">
+                    :training_method="$training->training_method"
+                    :start="$training->start">
                 </x-training-card>
             @endforeach
         </div>
