@@ -17,9 +17,10 @@ class TrainingController extends Controller
         $startOfWeek = $currentDate->addWeeks((int)$week)->startOfWeek()->startOfDay()->toDateTimeString();
         $endOfWeek = $currentDate->endOfWeek()->endOfDay()->toDateTimeString();
 
-        $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])->get();
+        $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])->with('trainingMethod')->get();
+        //return response()->json($trainings);
 
-        return response()->json($trainings);
+        return view('trainings.training-list', ['trainings' => $trainings]);
     }
 
     public function getById(int $id)

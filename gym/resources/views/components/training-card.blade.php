@@ -1,12 +1,11 @@
-@props(['start' => $start, 'trainer' => $trainer])
+@props(['training_method' => $training_method, 'start' => $start])
 
 <div class="col-md-4 col-sm-12">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title"> {{ $start }}</h5>
-            <p>Trainer: {{ $trainer }}</p>
-
-            <a href="training-methods/" class="btn btn-primary">Book</a>
+            <h5 class="card-title"> {{ $training_method->name}}</h5>
+            <p class="card-text"> {{ $start }}</p>
+{{--            <a href="training-methods/{{ lcfirst($title) }}" class="btn btn-primary">More</a>--}}
         </div>
     </div>
 </div>

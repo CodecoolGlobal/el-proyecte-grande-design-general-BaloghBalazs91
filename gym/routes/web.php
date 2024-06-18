@@ -27,16 +27,16 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
-Route::get('training-methods', [TrainingMethodController::class, 'getAll']);
-Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName']);
+Route::get('training-methods', [TrainingMethodController::class, 'getAll'])->name('training-methods');
+Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName'])->name('training-method');
 
 // Trainings
-Route::get('trainings', [TrainingController::class, 'getAll']);
-Route::get('trainings/{id}', [TrainingController::class, 'getById']);
-Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId']);
+Route::get('trainings', [TrainingController::class, 'getAll'])->name('training-list');;
+Route::get('trainings/{id}', [TrainingController::class, 'getById'])->name('training');
+Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId'])->name('trainings-by-user');
 
 // Trainers
-Route::get('trainers', [TrainerController::class, 'getAll']);
-Route::get('trainers/{id}', [TrainerController::class, 'getById']);
+Route::get('trainers', [TrainerController::class, 'getAll'])->name('trainers');
+Route::get('trainers/{id}', [TrainerController::class, 'getById'])->name('trainer');
 #Route::post('trainers/create', [TrainerController::class, 'create']);
 
