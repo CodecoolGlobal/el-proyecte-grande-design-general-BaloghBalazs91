@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\TrainingMethodController;
+use App\Http\Controllers\TrainerController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,16 +19,24 @@ Route::get('register', function () {
 
 Route::post('login', [UserController::class, 'login']);
 
-
 Route::post('register', [UserController::class, 'registerTrainee']);
 
 Route::middleware('auth')->group(function () {
     Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
     Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
+Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
+Route::get('training-methods', [TrainingMethodController::class, 'getAll']);
+Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName']);
 
-Route::get('training-methods', [\App\Http\Controllers\TrainingMethodController::class, 'getAll']);
-Route::get('training-methods/{training_method_name}', [\App\Http\Controllers\TrainingMethodController::class, 'getByName']);
+// Trainings
+Route::get('trainings', [TrainingController::class, 'getAll']);
+Route::get('trainings/{id}', [TrainingController::class, 'getById']);
+Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId']);
 
+// Trainers
+Route::get('trainers', [TrainerController::class, 'getAll']);
+Route::get('trainers/{id}', [TrainerController::class, 'getById']);
+#Route::post('trainers/create', [TrainerController::class, 'create']);
 
