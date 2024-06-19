@@ -25,6 +25,16 @@ Route::middleware('auth')->group(function () {
     Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
     Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
+
+Route::get('/users',[UserController::class,'index']);
+Route::get('/users/create',[UserController::class,'create']);
+Route::get('/users/{user}',[UserController::class,'show']);
+Route::post('/users',[UserController::class,'store']);
+Route::get('/users',[UserController::class,'edit']);
+Route::get('/users/{user}',[UserController::class,'update']);
+Route::get('/users/{user}',[UserController::class,'destroy']);
+
+
 Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
 Route::get('training-methods', [TrainingMethodController::class, 'getAll'])->name('training-methods');

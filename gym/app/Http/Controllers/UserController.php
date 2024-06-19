@@ -86,4 +86,81 @@ class UserController extends Controller
         }
     }
 
+    public function index()
+    {
+        $users = User::where('role', 'user')->get();
+        return response()->json([$users],200);
+    }
+
+
+
+
+    public function create()
+    {
+      return view();
+        }
+
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'required|string|in:user,admin,trainer'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $newUser = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,]);
+
+        return response()->json(['message'=>'User created successfully'],201);
+    }
+
+
+    public function edit()
+    {
+       return view();
+    }
+
+
+    public function update(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+            'message' => 'nullable|string',
+            'role' => 'required|string|in:user,admin',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'message' => $request->message,
+            'role' => $request->role,
+        ]);
+
+        return response()->json(['message' => 'User added successfully'], 200);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully'], 200);
+    }
+
+
 }
