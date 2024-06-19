@@ -91,9 +91,6 @@ class TrainingController extends Controller
 
     public function update(Training $training)
     {
-        Log::info('Update route hit.');
-        Log::info('Training: ' . $training);
-
         request()->validate([
             'start' => 'required',
             'duration' => 'required',
@@ -111,8 +108,6 @@ class TrainingController extends Controller
             'training_method_id' => request('training_method_id'),
             'trainer_id' => request('trainer_id'),
         ]);
-
-        Log::info('Update status: ' . $update);
 
         return redirect('/trainings');
     }

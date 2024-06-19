@@ -25,10 +25,18 @@ Route::middleware('auth')->group(function () {
     Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
     Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
-Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
-Route::get('training-methods', [TrainingMethodController::class, 'getAll'])->name('training-methods');
-Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName'])->name('training-method');
+// Training methods
+Route::controller(TrainingMethodController::class)->group(function () {
+    Route::get('training-methods', 'index');
+    Route::get('training-methods/create', 'create');
+    Route::post('training-methods', 'store');
+    Route::get('training-methods/{trainingMethod:name}', 'show');
+    Route::get('training-methods/{trainingMethod:name}/edit', 'edit');
+    Route::patch('training-methods/{trainingMethod}', 'update');
+    Route::delete('training-methods/{trainingMethod}', 'destroy');
+    Route::get('trainings/book/{userId}/{trainingId}', 'joinTrainingById');
+});
 
 // Trainings
 Route::controller(TrainingController::class)->group(function () {

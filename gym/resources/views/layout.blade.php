@@ -35,10 +35,10 @@
                     </li>
                 @endif
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('training-methods') }}">Training methods</a>
+                        <a class="nav-link" href="/training-methods">Training methods</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('training-list') }}">Trainings</a>
+                        <a class="nav-link" href="/trainings">Trainings</a>
                     </li>
 
 
