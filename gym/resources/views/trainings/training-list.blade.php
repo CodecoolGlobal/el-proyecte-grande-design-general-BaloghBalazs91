@@ -7,9 +7,8 @@
     <div class="container">
         <div class="row g-2">
             @foreach ($trainings as $training)
-                @dump($training->training_method) <!-- Debugging Line -->
                 <x-training-card
-                    :training_method="$training->training_method"
+                    :training_method="$training->trainingMethod"
                     :start="$training->start">
                 </x-training-card>
             @endforeach
