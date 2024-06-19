@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
 use App\Models\Training;
+use App\Models\TrainingMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
 {
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         $week = $request->query('week', 0);
 
@@ -20,13 +23,106 @@ class TrainingController extends Controller
         $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])->with('trainingMethod')->get();
         //return response()->json($trainings);
 
-        return view('trainings.training-list', ['trainings' => $trainings]);
+        return view('trainings.index', ['trainings' => $trainings]);
     }
 
-    public function getById(int $id)
+    public function create()
     {
-        $training = Training::query()->with('trainees')->find($id);
-        return response()->json($training);
+        $training_methods = TrainingMethod::all();
+        $rooms = Room::all();
+        $trainers = User::where('role', 'trainer')->get();
+
+        return view('trainings.create', [
+            'training_methods' => $training_methods,
+            'rooms' => $rooms,
+            'trainers' => $trainers]);
+    }
+
+    public function show(Training $training)
+    {
+        $training = Training::with('trainingMethod')
+            ->with('trainer')
+            ->with('trainees')
+            ->with('room')
+            ->find($training->id);
+
+        return view('trainings.show', ['training' => $training]);
+    }
+
+    public function store(Training $training)
+    {
+        request()->validate([
+            'start' => 'required',
+            'duration' => 'required',
+            'room_id' => 'required',
+            'capacity' => 'required',
+            'training_method_id' => 'required',
+            'trainer_id' => 'required',
+        ]);
+
+        Training::create([
+            'start' => request('start'),
+            'duration' => request('duration'),
+            'room_id' => request('room_id'),
+            'capacity' => request('capacity'),
+            'training_method_id' => request('training_method_id'),
+            'trainer_id' => request('trainer_id'),
+        ]);
+    }
+
+    public function edit(Training $training)
+    {
+        $training = Training::with('trainingMethod')
+            ->with('trainer')
+            ->with('trainees')
+            ->with('room')
+            ->find($training->id);
+
+        $training_methods = TrainingMethod::all();
+        $rooms = Room::all();
+        $trainers = User::where('role', 'trainer')->get();
+
+        return view('trainings.edit', [
+            'training' => $training,
+            'training_methods' => $training_methods,
+            'rooms' => $rooms,
+            'trainers' => $trainers]);
+    }
+
+    public function update(Training $training)
+    {
+        Log::info('Update route hit.');
+        Log::info('Training: ' . $training);
+
+        request()->validate([
+            'start' => 'required',
+            'duration' => 'required',
+            'room_id' => 'required',
+            'capacity' => 'required',
+            'training_method_id' => 'required',
+            'trainer_id' => 'required',
+        ]);
+
+        $update = $training->update([
+            'start' => request('start'),
+            'duration' => request('duration'),
+            'room_id' => request('room_id'),
+            'capacity' => request('capacity'),
+            'training_method_id' => request('training_method_id'),
+            'trainer_id' => request('trainer_id'),
+        ]);
+
+        Log::info('Update status: ' . $update);
+
+        return redirect('/trainings');
+    }
+
+    public function destroy(Training $training)
+    {
+        $training->delete();
+        Log::info('Deleted training with id: ' . $training->id);
+
+        return redirect('/trainings');
     }
 
     public function getByUserId(int $user_id)

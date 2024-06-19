@@ -41,9 +41,16 @@ Route::get('training-methods', [TrainingMethodController::class, 'getAll'])->nam
 Route::get('training-methods/{training_method_name}', [TrainingMethodController::class, 'getByName'])->name('training-method');
 
 // Trainings
-Route::get('trainings', [TrainingController::class, 'getAll'])->name('training-list');;
-Route::get('trainings/{id}', [TrainingController::class, 'getById'])->name('training');
-Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId'])->name('trainings-by-user');
+Route::controller(TrainingController::class)->group(function () {
+    Route::get('/trainings', 'index')->name('training-list');
+    Route::get('/trainings/create', 'create');
+    Route::get('/trainings/{training}',  'show');
+    Route::post('/trainings',  'store');
+    Route::get('/trainings/{training}/edit', 'edit');
+    Route::patch('/trainings/{training}',  'update');
+    Route::delete('/trainings/{training}',  'destroy');
+    //Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId'])->name('trainings-by-user');
+});
 
 // Trainers
 Route::get('trainers', [TrainerController::class, 'getAll'])->name('trainers');
