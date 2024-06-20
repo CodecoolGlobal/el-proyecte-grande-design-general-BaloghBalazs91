@@ -1,11 +1,15 @@
-@props(['name' => $name, 'voteRate' => $voteRate])
+@props(['name', 'email', 'training_methods', 'votes', 'id'])
 
 <div class="col-md-4 col-sm-12">
     <div class="card">
-        <img src="" class="card-img-top"  alt="...">
         <div class="card-body">
-            <h5 class="card-title"> {{ $name }}</h5>
-            <p>Vote rate: {{ $voteRate }}</p>
+            <p class="card-text">Name: {{ $name }}</p>
+            <p class="card-text">Email: {{ $email }}</p>
+            <p class="card-text">Training methods: {{ implode(", ", $training_methods) }}</p>
+            <p class="card-text">Votes: {{ $votes }}</p>
+            @if(!request()->is('training-methods/*'))
+                <a href="/trainers/{{ $id }}" class="btn btn-outline-dark">More</a>
+            @endif
         </div>
     </div>
 </div>

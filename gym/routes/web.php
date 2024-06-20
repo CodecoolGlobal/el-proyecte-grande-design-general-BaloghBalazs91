@@ -51,7 +51,13 @@ Route::controller(TrainingController::class)->group(function () {
 });
 
 // Trainers
-Route::get('trainers', [TrainerController::class, 'getAll'])->name('trainers');
-Route::get('trainers/{id}', [TrainerController::class, 'getById'])->name('trainer');
-#Route::post('trainers/create', [TrainerController::class, 'create']);
+Route::controller(TrainerController::class)->group(function () {
+    Route::get('trainers', 'index');
+    Route::get('trainers/create', 'create');
+    Route::get('trainers/{id}',  'show');
+    Route::post('trainers', 'store');
+    Route::get('trainers/{id}/edit', 'edit');
+    Route::patch('trainers/{trainer}', 'update');
+    Route::delete('trainers/{trainer}', 'destroy');
+});
 

@@ -40,6 +40,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/trainings">Trainings</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/trainers">Trainers</a>
+                    </li>
 
 
             </ul>
