@@ -28,7 +28,7 @@ class UserController extends Controller
             ];
 
             // Redirect after successful login
-            return view('user.profile', compact('user'));
+            return view('users.profile', compact('user'));
         }
 
         return back()->withErrors([
@@ -72,7 +72,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         Log::info($user);
-        return view('user.profile', compact('user'));
+        return view('users.profile', compact('user'));
     }
 
     public function profileData()
@@ -85,5 +85,83 @@ class UserController extends Controller
             return response()->json(['message'=>"Unauthorized"],401);
         }
     }
+
+    public function index()
+    {
+        $users = User::all() ?? [];
+        return view('users.index',['users' => $users]);
+    }
+
+
+
+
+    public function create()
+    {
+        return view('users.create');
+    }
+
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'required|string|in:user,admin,trainer'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $newUser = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,]);
+
+        return response()->json(['message'=>'User created successfully'],201);
+    }
+
+
+    public function edit(User $user)
+    {
+
+       return view("users.edit",['user'=> $user]);
+    }
+
+
+    public function update(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+            'message' => 'nullable|string',
+            'role' => 'required|string|in:user,admin,trainer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'message' => $request->message,
+            'role' => $request->role,
+        ]);
+
+        return redirect('/users');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect('/users');
+    }
+
 
 }

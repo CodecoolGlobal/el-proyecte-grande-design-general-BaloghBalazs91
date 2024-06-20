@@ -98,5 +98,12 @@ class TrainingMethodController extends Controller
         $trainingMethod->delete();
         return redirect('/training-methods');
     }
+    public function getTrainersById($id)
+    {
+        $training_methods = TrainingMethod::query()->find($id);
+        $trainers = [];
+        //$training_methods->
+    }
+
 
 }
