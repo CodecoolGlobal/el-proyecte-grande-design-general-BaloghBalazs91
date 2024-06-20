@@ -6,7 +6,7 @@
         <div class="card-body">
             <h5 class="card-title"> {{ ucwords($title) }}</h5>
             <p class="card-text"> {{ $text }}</p>
-            <a href="training-methods/{{ lcfirst($title) }}" class="btn btn-primary">More</a>
+            <a href="training-methods/{{ $title }}" class="btn btn-primary">More</a>
         </div>
     </div>
 </div>
