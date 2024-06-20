@@ -11,9 +11,15 @@
         <div class="container">
             <div class="row g-2">
                 @foreach($training_method->trainers as $trainer)
+                    @php
+                        $trainingMethods = $trainer->trainingMethods->pluck('name')->toArray();
+                    @endphp
                     <x-trainer-card
                         name="{{ $trainer->name }}"
-                        voteRate="{{ $trainer->voteRate() }}">
+                        email="{{ $trainer->email }}"
+                        :training_methods="$trainingMethods"
+                        votes="{{ count($trainer->vote_list) ? array_sum($trainer->vote_list) / count($trainer->vote_list) : 0}}"
+                        id="{{ $trainer->id }}">
                     </x-trainer-card>
                 @endforeach
             </div>
@@ -22,13 +28,16 @@
                     <a href="/training-methods/{{ $training_method->name }}/edit" class="btn btn-primary px-4">Edit</a>
                 </div>
             </div>
-            <h2>Trainings</h2>
+            <h2 class="mt-5">Trainings</h2>
             <div class="row g-2">
                 @foreach($training_method->trainings as $training)
                     <x-training-card
                         start="{{ $training->start }}"
                         trainer="{{ $training->trainer->name }}"
-                        id="{{ $training->id }}">
+                        training_method="{{ $training_method->name }}"
+                        id="{{ $training->id }}"
+                        capacity="{{ $training->capacity }}"
+                        number_of_participants="{{ $training->trainees_count }}">
                     </x-training-card>
                 @endforeach
             </div>

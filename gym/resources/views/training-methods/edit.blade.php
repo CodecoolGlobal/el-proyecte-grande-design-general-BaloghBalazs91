@@ -52,7 +52,9 @@
                 <div class='container mt-3 ps-0'>
                     <div class='row'>
                         <div class='col d-flex justify-content-between'>
-                            <button form='delete-form' class='btn btn-danger'>Delete</button>
+                            @if(count($training_method->trainings) > 0)
+                                <button form='delete-form' class='btn btn-danger'>Delete</button>
+                            @endif
                             <div>
                                 <a href="/training-methods/{{ $training_method->name }}" type="button" class="btn btn-outline-dark">Cancel</a>
                                 <button type='submit' class='btn btn-primary ms-2'>Update</button>

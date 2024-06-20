@@ -24,12 +24,21 @@ class TrainingMethodController extends Controller
     public function show(TrainingMethod $trainingMethod)
     {
         $training_method = TrainingMethod::with([
-            'trainers',
+            'trainers' => function($query) {
+                $query->with(['trainingMethods' => function ($subQuery) {
+                    $subQuery->select('name');
+                }]);
+            },
             'trainings' => function ($query) {
-                $query->where('start', '>=', Carbon::now())->with('trainer')->orderBy('start');
+                $query->where('start', '>=', Carbon::now())
+                    ->with('trainer')
+                    ->withCount('trainees')
+                    ->withCount('trainees')
+                    ->orderBy('start');
             }
         ])->find($trainingMethod->id);
 
+        //return response()->json($training_method);
         return view('training-methods.show', ['training_method' => $training_method]);
     }
 
@@ -89,10 +98,5 @@ class TrainingMethodController extends Controller
         $trainingMethod->delete();
         return redirect('/training-methods');
     }
-    public function getTrainersById($id)
-    {
-        $training_methods = TrainingMethod::query()->find($id);
-        $trainers = [];
-        //$training_methods->
-    }
+
 }
