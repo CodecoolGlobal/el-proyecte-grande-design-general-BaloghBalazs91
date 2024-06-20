@@ -16,11 +16,13 @@
                 <h4>Free slots: {{ $training->capacity - count($training->trainees) }}</h4>
                 <h4>Room: {{ $training->room->name }}</h4>
             </div>
-            <div class="row g-2 mt-3 justify-content-start">
-                <div class="col-auto">
-                    <a href="/trainings/{{ $training->id }}/edit" class="btn btn-primary px-4">Edit</a>
+            @can('edit', $training)
+                <div class="row g-2 mt-3 justify-content-start">
+                    <div class="col-auto">
+                        <a href="/trainings/{{ $training->id }}/edit" class="btn btn-primary px-4">Edit</a>
+                    </div>
                 </div>
-            </div>
+            @endcan
         @endif
     </div>
 @endsection

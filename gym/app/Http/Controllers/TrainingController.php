@@ -8,6 +8,7 @@ use App\Models\TrainingMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
@@ -89,6 +90,7 @@ class TrainingController extends Controller
 
     public function edit(Training $training)
     {
+
         $training = Training::with('trainingMethod')
             ->with('trainer')
             ->with('trainees')
@@ -108,6 +110,8 @@ class TrainingController extends Controller
 
     public function update(Training $training)
     {
+        Gate::authorize('edit', $training);
+
         request()->validate([
             'start' => 'required',
             'duration' => 'required',

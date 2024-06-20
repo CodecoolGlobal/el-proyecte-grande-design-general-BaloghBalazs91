@@ -42,7 +42,9 @@ Route::controller(TrainingMethodController::class)->group(function () {
     Route::get('training-methods/create', 'create');
     Route::post('training-methods', 'store');
     Route::get('training-methods/{trainingMethod:name}', 'show');
-    Route::get('training-methods/{trainingMethod:name}/edit', 'edit');
+    Route::get('training-methods/{trainingMethod:name}/edit', 'edit')
+        ->middleware('auth')
+        ->can('edit-training', 'training');
     Route::patch('training-methods/{trainingMethod}', 'update');
     Route::delete('training-methods/{trainingMethod}', 'destroy');
 });
