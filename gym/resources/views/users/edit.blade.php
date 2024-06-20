@@ -23,7 +23,25 @@
                         <x-form-error name='email'></x-form-error>
                     </div>
 
+                    <div class='form-group mt-2' type="password">
+                        <x-form-label for='old_password'>Old Password</x-form-label>
+                        <x-form-input name='old_password' id='old_password' />
+                        <x-form-error name='old_password'></x-form-error>
+                    </div>
+
                     <div class='form-group mt-2'>
+                        <x-form-label for='new_password1'>New Password</x-form-label>
+                        <x-form-input name='new_password1' id='new_password1' />
+                        <x-form-error name='new_password1'></x-form-error>
+                    </div>
+
+                    <div class='form-group mt-2'>
+                        <x-form-label for='new_password2'>New Password</x-form-label>
+                        <x-form-input name='new_password2' id='new_password2' />
+                        <x-form-error name='new_password2'></x-form-error>
+                    </div>
+
+                    <div class='form-group mt-2' {{$user->role==='admin'?'':'hidden'}}>
                         <x-form-label for='role'>Role</x-form-label>
                         <select class='form-select' name='role'>
                             <option value='{{ $user->role }}'>{{ ucfirst($user->role) }}</option>
@@ -39,6 +57,7 @@
                         </select>
                         <x-form-error name='role'></x-form-error>
                     </div>
+
 
                     <div class='container mt-3 ps-0'>
                         <div class='row'>

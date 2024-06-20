@@ -27,7 +27,6 @@ class UserController extends Controller
             $user = Auth::user();
             $user->createToken('my-app-token')->plainTextToken;
 
-            // Redirect after successful login
             return view('users.profile', compact('user'));
         }
 
@@ -61,23 +60,16 @@ class UserController extends Controller
     }
 
 
-    public function profile(Request $request)
+    public function profile()
     {
         $user = Auth::user();
         Log::info($user);
+        if(Auth::check()){
         return view('users.profile', compact('user'));
+        }
+        return response()->json(['message'=>"Unauthorized"],401);
     }
 
-    public function profileData()
-    {
-        if(Auth::check()){
-            $user = Auth::user();
-            Log::info($user);
-            return response()->json($user,200);
-        }else{
-            return response()->json(['message'=>"Unauthorized"],401);
-        }
-    }
 
     public function index()
     {
@@ -126,6 +118,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -137,11 +130,21 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        if($request->old_password){
+            if(!Hash::check($request->old_password, $user->password)){
+                return response()->json(['message'=>'Old password is incorrect'],401);
+            }
+            if($request->new_password1===$request->new_password2){
+            $user->password = Hash::make($request->new_password1);
+            }else{
+                return response()->json(['message'=>'New Passwords do not match'],401);
+            }
+        }
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            //'password' => $request->password ? Hash::make($request->password) : $user->password,
             'message' => $request->message,
             'role' => $request->role,
         ]);
