@@ -26,13 +26,13 @@ Route::middleware('auth')->group(function () {
     Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
 
-Route::get('/users',[UserController::class,'index']);
-Route::get('/users/create',[UserController::class,'create']);
-Route::get('/users/{user}',[UserController::class,'show']);
-Route::post('/users',[UserController::class,'store']);
-Route::get('/users',[UserController::class,'edit']);
-Route::get('/users/{user}',[UserController::class,'update']);
-Route::get('/users/{user}',[UserController::class,'destroy']);
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
 
 Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
@@ -56,4 +56,6 @@ Route::controller(TrainingController::class)->group(function () {
 Route::get('trainers', [TrainerController::class, 'getAll'])->name('trainers');
 Route::get('trainers/{id}', [TrainerController::class, 'getById'])->name('trainer');
 #Route::post('trainers/create', [TrainerController::class, 'create']);
+
+
 

@@ -8,6 +8,7 @@
                 <h5 class="card-title">User Data</h5>
                 <p class="card-text">Name : {{$user->name}}</p>
                 <p class="card-text">Email : {{$user->email}}</p>
+                <p class="card-text">token : {{$user->rememeber_token}}</p>
             </div>
             </div>
     </div>

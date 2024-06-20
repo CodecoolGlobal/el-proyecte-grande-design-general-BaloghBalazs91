@@ -28,7 +28,7 @@ class UserController extends Controller
             ];
 
             // Redirect after successful login
-            return view('user.profile', compact('user'));
+            return view('users.profile', compact('user'));
         }
 
         return back()->withErrors([
@@ -72,7 +72,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         Log::info($user);
-        return view('user.profile', compact('user'));
+        return view('users.profile', compact('user'));
     }
 
     public function profileData()
@@ -88,8 +88,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::where('role', 'user')->get();
-        return response()->json([$users],200);
+        $users = User::all() ?? [];
+        return view('users.index',['users' => $users]);
     }
 
 
@@ -97,8 +97,8 @@ class UserController extends Controller
 
     public function create()
     {
-      return view();
-        }
+        return view('users.create');
+    }
 
 
     public function store(Request $request)
@@ -124,9 +124,10 @@ class UserController extends Controller
     }
 
 
-    public function edit()
+    public function edit(User $user)
     {
-       return view();
+
+       return view("users.edit",['user'=> $user]);
     }
 
 
@@ -137,7 +138,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8',
             'message' => 'nullable|string',
-            'role' => 'required|string|in:user,admin',
+            'role' => 'required|string|in:user,admin,trainer',
         ]);
 
         if ($validator->fails()) {
@@ -152,14 +153,14 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        return response()->json(['message' => 'User added successfully'], 200);
+        return redirect('/users');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        return redirect('/users');
     }
 
 

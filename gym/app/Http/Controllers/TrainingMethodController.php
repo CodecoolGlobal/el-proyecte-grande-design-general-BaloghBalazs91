@@ -30,4 +30,6 @@ class TrainingMethodController extends Controller
         $trainers = [];
         //$training_methods->
     }
+
+
 }
