@@ -52,7 +52,7 @@
                 <div class='container mt-3 ps-0'>
                     <div class='row'>
                         <div class='col d-flex justify-content-between'>
-                            @if(count($training_method->trainings) > 0)
+                            @if(count($training_method->trainings) === 0)
                                 <button form='delete-form' class='btn btn-danger'>Delete</button>
                             @endif
                             <div>
