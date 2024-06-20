@@ -42,9 +42,7 @@ Route::controller(TrainingMethodController::class)->group(function () {
     Route::get('training-methods/create', 'create');
     Route::post('training-methods', 'store');
     Route::get('training-methods/{trainingMethod:name}', 'show');
-    Route::get('training-methods/{trainingMethod:name}/edit', 'edit')
-        ->middleware('auth')
-        ->can('edit-training', 'training');
+    Route::get('training-methods/{trainingMethod:name}/edit', 'edit');
     Route::patch('training-methods/{trainingMethod}', 'update');
     Route::delete('training-methods/{trainingMethod}', 'destroy');
 });
@@ -55,7 +53,9 @@ Route::controller(TrainingController::class)->group(function () {
     Route::get('/trainings/create', 'create');
     Route::get('/trainings/{training}',  'show');
     Route::post('/trainings',  'store');
-    Route::get('/trainings/{training}/edit', 'edit');
+    Route::get('/trainings/{training}/edit', 'edit')
+        ->middleware('auth')
+        ->can('edit', 'training');
     Route::patch('/trainings/{training}',  'update');
     Route::delete('/trainings/{training}',  'destroy');
     Route::get('trainings/book/{userId}/{trainingId}', 'joinTrainingById');

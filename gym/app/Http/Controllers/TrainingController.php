@@ -90,6 +90,7 @@ class TrainingController extends Controller
 
     public function edit(Training $training)
     {
+        Gate::authorize('edit', $training);
 
         $training = Training::with('trainingMethod')
             ->with('trainer')
