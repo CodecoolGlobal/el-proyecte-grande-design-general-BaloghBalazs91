@@ -14,16 +14,27 @@ class TrainingController extends Controller
 {
     public function index(Request $request)
     {
-        $week = $request->query('week', 0);
+        $week = $request->query('week');
+        Log::info($week);
 
-        $currentDate = Carbon::now();
-        $startOfWeek = $currentDate->addWeeks((int)$week)->startOfWeek()->startOfDay()->toDateTimeString();
-        $endOfWeek = $currentDate->endOfWeek()->endOfDay()->toDateTimeString();
+        if ($week == null)
+        {
+            $trainings = Training::with(['trainingMethod', 'trainer'])
+                ->whereNotNull('trainer_id')
+                ->get();
+        }
+        else
+        {
+            $currentDate = Carbon::now();
+            $startOfWeek = $currentDate->addWeeks((int)$week)->startOfWeek()->startOfDay()->toDateTimeString();
+            $endOfWeek = $currentDate->endOfWeek()->endOfDay()->toDateTimeString();
 
-        $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])
-            ->with('trainingMethod')
-            ->with('trainer')
-            ->get();
+            $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])
+                ->with(['trainingMethod', 'trainer'])
+                ->whereNotNull('trainer_id')
+                ->get();
+        }
+
         //return response()->json($trainings);
 
         return view('trainings.index', ['trainings' => $trainings]);
@@ -47,8 +58,11 @@ class TrainingController extends Controller
             ->with('trainer')
             ->with('trainees')
             ->with('room')
+            ->whereNotNull('trainer_id')
             ->find($training->id);
+        Log::info($training);
 
+        //return response()->json($training);
         return view('trainings.show', ['training' => $training]);
     }
 
@@ -132,23 +146,23 @@ class TrainingController extends Controller
 //        return response()->json($trainings);
 //    }
 
-//    public function joinTrainingById( int $userId, int $trainingId){
-//        $user = User::query()->find($userId);
-//        $training = Training::with('trainees')->find($trainingId);
-//
-//        if ($training === null || $user === null) {
-//            return response()->json(['message' => 'Training or user not found.'], 404);
-//        }
-//        if ($training->capacity<=count($training->trainees)){
-//            return response()->json(['message' => 'There is no available slot on this training!'], 422);
-//        }
-//
-//        $isAlreadyParticipating = $training->trainees->contains('pivot.trainee_id', $userId);
-//        if ($isAlreadyParticipating) {
-//            return response()->json(['message' => 'User is already participating in this training.'], 422);
-//        }
-//
-//        $training->trainees()->attach($userId);
-//        return response()->json(['message' => 'User has been successfully added to the training.']);
-//    }
+    public function joinTrainingById( int $userId, int $trainingId){
+        $user = User::query()->find($userId);
+        $training = Training::with('trainees')->find($trainingId);
+
+        if ($training === null || $user === null) {
+            return response()->json(['message' => 'Training or user not found.'], 404);
+        }
+        if ($training->capacity<=count($training->trainees)){
+            return response()->json(['message' => 'There is no available slot on this training!'], 422);
+        }
+
+        $isAlreadyParticipating = $training->trainees->contains('pivot.trainee_id', $userId);
+        if ($isAlreadyParticipating) {
+            return response()->json(['message' => 'User is already participating in this training.'], 422);
+        }
+
+        $training->trainees()->attach($userId);
+        return response()->json(['message' => 'User has been successfully added to the training.']);
+    }
 }

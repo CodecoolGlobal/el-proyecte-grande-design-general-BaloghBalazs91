@@ -35,7 +35,6 @@ Route::put('/users/{user}', [UserController::class, 'update'])->name('users.upda
 Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
 
-Route::get('trainings/book/{userId}/{trainingId}', [TrainingController::class, 'joinTrainingById']);
 
 // Training methods
 Route::controller(TrainingMethodController::class)->group(function () {
@@ -46,7 +45,6 @@ Route::controller(TrainingMethodController::class)->group(function () {
     Route::get('training-methods/{trainingMethod:name}/edit', 'edit');
     Route::patch('training-methods/{trainingMethod}', 'update');
     Route::delete('training-methods/{trainingMethod}', 'destroy');
-    Route::get('trainings/book/{userId}/{trainingId}', 'joinTrainingById');
 });
 
 // Trainings
@@ -58,7 +56,7 @@ Route::controller(TrainingController::class)->group(function () {
     Route::get('/trainings/{training}/edit', 'edit');
     Route::patch('/trainings/{training}',  'update');
     Route::delete('/trainings/{training}',  'destroy');
-    //Route::get('trainings/booked-by-user/{user_id}', [TrainingController::class, 'getByUserId'])->name('trainings-by-user');
+    Route::get('trainings/book/{userId}/{trainingId}', 'joinTrainingById');
 });
 
 // Trainers
