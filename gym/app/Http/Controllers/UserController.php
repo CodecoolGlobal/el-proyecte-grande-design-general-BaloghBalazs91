@@ -17,15 +17,15 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = request()->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $user = Auth::user();
-            $token = $user->createToken('my-app-token')->plainTextToken;
-            $response = [
-                'user' => $user,
-                'token' => $token
-            ];
+            $user->createToken('my-app-token')->plainTextToken;
 
             // Redirect after successful login
             return view('users.profile', compact('user'));
@@ -36,26 +36,19 @@ class UserController extends Controller
         ]);
     }
     public function logout(Request $request){
-        Log::info('Attempting to logout user.');
-        auth()->guard('web')->logout();
-        Log::info('User logged out.');
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::logout();
+
         return redirect('/');
     }
 
     public function  registerTrainee(Request $request)
     {
         // Validate the incoming request data
-        $validator = Validator::make($request->all(), [
+        request()->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
 
         DB::table('users')->insert([
             'name' => $request->name,
