@@ -6,7 +6,7 @@
     <h1>Create a training method</h1>
     <div class="container">
         <div class="row g-2">
-            <form method="POST" action="/training-methods">
+            <form method="POST" action="/training-methods" enctype="multipart/form-data">
                 @csrf
 
                 <div class='form-group mt-2'>

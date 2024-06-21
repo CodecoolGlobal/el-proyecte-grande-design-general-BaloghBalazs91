@@ -6,6 +6,7 @@ use App\Models\TrainingMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TrainingMethodController extends Controller
 {
@@ -53,13 +54,25 @@ class TrainingMethodController extends Controller
             'description' => 'required',
             'trainers' => 'required|array',
             'trainers.*' => 'exists:App\Models\User,id',
+            'image' => 'required|image|mimes:jpg|max:2048',
         ]);
+
+        $fileName = "training-method-" . request('name') . "-card.jpg";
+
+        if (request()->file('image')->isValid()) {
+
+            $imagePath = request()->file('image')->storeAs('public/images', $fileName);
+
+            $url = Storage::url($imagePath);
+        }
 
         $trainingMethod = TrainingMethod::create([
             'name' => request('name'),
             'description' => request('description'),
-            'image' => 'training-method-aerobik-card.jpg'
+            'image' => $fileName
         ]);
+
+
 
         $trainingMethod->trainers()->attach(request('trainers'));
 
