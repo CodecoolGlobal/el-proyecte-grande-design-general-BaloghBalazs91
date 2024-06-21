@@ -17,7 +17,7 @@
         </h2>
 
         <h5 align="center">
-        <a href="/user.profile">User Management:</a><br>
+        <a href="/user/profile">User Management:</a><br>
         Easily register and manage your user profile.<br>
             <br>
 

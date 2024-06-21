@@ -22,7 +22,7 @@ Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'registerTrainee']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('user.profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('user/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('logout', [UserController::class, 'logout'])->name('logout');
 });
 

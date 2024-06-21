@@ -149,7 +149,7 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect('/users');
+        return redirect('/user/profile');
     }
 
     public function destroy(User $user)
