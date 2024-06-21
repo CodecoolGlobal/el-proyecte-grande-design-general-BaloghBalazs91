@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TraineeCanceled;
+use App\Mail\TraineeJoined;
 use App\Models\Room;
 use App\Models\Training;
 use App\Models\TrainingMethod;
@@ -10,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class TrainingController extends Controller
 {
@@ -20,10 +23,18 @@ class TrainingController extends Controller
 
         if ($week == null)
         {
-            $trainings = Training::with(['trainingMethod', 'trainer'])
+            $trainings = Training::with(['trainingMethod', 'trainer', 'trainees' => function ($query) {
+                $query->select('users.id');
+            }])
+                ->withCount('trainees')
                 ->whereNotNull('trainer_id')
+                ->where('start', '>=', Carbon::now()->setTimezone('GMT+2'))
+                ->orderBy('start')
                 ->get();
+
+            //return response()->json($trainings);
         }
+
         else
         {
             $currentDate = Carbon::now();
@@ -31,8 +42,13 @@ class TrainingController extends Controller
             $endOfWeek = $currentDate->endOfWeek()->endOfDay()->toDateTimeString();
 
             $trainings = Training::whereBetween('start', [$startOfWeek, $endOfWeek])
-                ->with(['trainingMethod', 'trainer'])
+                ->with(['trainingMethod', 'trainer', 'trainees' => function ($query) {
+                    $query->select('users.id');
+                }])
+                ->withCount('trainees')
                 ->whereNotNull('trainer_id')
+                ->where('start', '>=', Carbon::now()->setTimezone('GMT+2'))
+                ->orderBy('start')
                 ->get();
         }
 
@@ -151,10 +167,7 @@ class TrainingController extends Controller
 //        return response()->json($trainings);
 //    }
 
-    public function joinTrainingById( int $userId, int $trainingId){
-        $user = User::query()->find($userId);
-        $training = Training::with('trainees')->find($trainingId);
-
+    public function joinTrainingById(User $user, Training $training){
         if ($training === null || $user === null) {
             return response()->json(['message' => 'Training or user not found.'], 404);
         }
@@ -162,12 +175,42 @@ class TrainingController extends Controller
             return response()->json(['message' => 'There is no available slot on this training!'], 422);
         }
 
-        $isAlreadyParticipating = $training->trainees->contains('pivot.trainee_id', $userId);
+        $isAlreadyParticipating = $training->trainees->contains('pivot.trainee_id', $user->id);
         if ($isAlreadyParticipating) {
             return response()->json(['message' => 'User is already participating in this training.'], 422);
         }
 
-        $training->trainees()->attach($userId);
-        return response()->json(['message' => 'User has been successfully added to the training.']);
+        $training->trainees()->attach($user->id);
+
+        Mail::to($training->trainer->email)->send(
+            new TraineeJoined($user, $training)
+        );
+
+        echo '<script>alert("Successfully joined the training.");
+            window.location.href="/trainings";</script>';
+    }
+
+    public function cancelTrainingById(User $user, Training $training)
+    {
+        if ($training === null || $user === null) {
+            return response()->json(['message' => 'Training or user not found.'], 404);
+        }
+
+        $trainees = $training->trainees->pluck('id')->toArray();
+
+        if (in_array($user->id, $trainees)) {
+
+            $training->trainees()->detach($user->id);
+
+            Mail::to($training->trainer->email)->send(
+                new TraineeCanceled($user, $training)
+            );
+
+            echo '<script>alert("Successfully canceled the training.");
+            window.location.href="/trainings";</script>';
+        }
+
+        echo '<script>alert("Cannot cancelled the training.");
+            window.location.href="/trainings";</script>';
     }
 }
