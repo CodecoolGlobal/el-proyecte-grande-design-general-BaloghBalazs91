@@ -33,6 +33,7 @@ class TrainingMethodController extends Controller
             'trainings' => function ($query) {
                 $query->where('start', '>=', Carbon::now())
                     ->whereNotNull('trainer_id')
+                    ->withCount('trainees')
                     ->with(['trainer', 'trainees' => function ($query) {
                         $query->select('users.id');
                     }])

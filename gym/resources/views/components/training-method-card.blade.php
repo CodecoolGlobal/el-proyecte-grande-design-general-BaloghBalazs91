@@ -2,7 +2,7 @@
 
 <div class="col-md-4 col-sm-12">
     <div class="card">
-        <img src="{{asset("storage/" . $image)}}" class="card-img-top"  alt="...">
+        <img src="{{ asset("storage/" . $image) }}" class="card-img-top"  alt="...">
         <div class="card-body">
             <h5 class="card-title"> {{ ucwords($title) }}</h5>
             <p class="card-text"> {{ $text }}</p>
