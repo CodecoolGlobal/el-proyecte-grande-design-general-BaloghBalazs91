@@ -50,9 +50,12 @@
 
                     <div class='form-group mt-2'>
                         <x-form-label for='trainer_id'>Trainer</x-form-label>
-                        <select class='form-select' name='trainer_id' id='trainer_id'>
+                        <select class='form-select' name='trainer_id' id='trainer_id' required disabled>
+                            <option value='' disabled selected>Select Trainer</option>
                             @foreach ($trainers as $trainer)
-                                <option value='{{ $trainer->id }}'>{{ $trainer->name }}</option>
+                                @foreach ($trainer->trainingMethods as $method)
+                                    <option value='{{ $trainer->id }}' data-training-method='{{ $method->id }}' >{{ $trainer->name }}</option>
+                                @endforeach
                             @endforeach
                         </select>
                         <x-form-error name='trainer_id'></x-form-error>
@@ -65,4 +68,36 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const trainingMethodSelect = document.getElementById('training_method_id');
+            const trainerSelect = document.getElementById('trainer_id');
+
+            trainingMethodSelect.addEventListener('change', function () {
+                // Enable the trainer select once a training method is selected
+                trainerSelect.disabled = false;
+
+                // Get the selected training method id
+                const selectedMethodId = this.value;
+
+                // Filter the trainers based on the selected training method
+                const options = trainerSelect.querySelectorAll('option');
+                options.forEach(option => {
+                    if (option.value) {
+                        if (option.dataset.trainingMethod == selectedMethodId) {
+                            option.style.display = 'block';
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            // Trigger change event to filter trainers on page load if a training method is already selected
+            if (trainingMethodSelect.value) {
+                const event = new Event('change');
+                trainingMethodSelect.dispatchEvent(event);
+            }
+        });
+    </script>
 @endsection

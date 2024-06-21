@@ -61,8 +61,10 @@ class TrainingController extends Controller
     {
         $training_methods = TrainingMethod::all();
         $rooms = Room::all();
-        $trainers = User::where('role', 'trainer')->get();
+        $trainers = User::where('role', 'trainer')->with('trainingMethods:id')->get()
+        ;
 
+        //return response()->json($trainers);
         return view('trainings.create', [
             'training_methods' => $training_methods,
             'rooms' => $rooms,
@@ -102,6 +104,7 @@ class TrainingController extends Controller
             'training_method_id' => request('training_method_id'),
             'trainer_id' => request('trainer_id'),
         ]);
+        return redirect('/trainings');
     }
 
     public function edit(Training $training)
