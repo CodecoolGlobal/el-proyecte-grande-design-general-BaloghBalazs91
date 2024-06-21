@@ -6,6 +6,7 @@ use App\Models\Room;
 use App\Models\Training;
 use App\Models\TrainingMethod;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
@@ -37,8 +38,23 @@ class TrainingFactory extends Factory
                 break;
         }
 
+        // Generate a random date within the next 6 months
+        $randomDate = fake()->dateTimeBetween('now', '+6 months');
+
+        // Generate a random hour between 6 and 20 (6 AM to 8 PM)
+        $randomHour = rand(6, 20);
+
+        // Generate a random minute from the set {0, 15, 30, 45}
+        $randomMinute = [0, 15, 30, 45][array_rand([0, 15, 30, 45])];
+
+        // Combine the date with the random time
+        $randomDateTime = Carbon::instance($randomDate)
+            ->setHour($randomHour)
+            ->setMinute($randomMinute)
+            ->setSecond(0);
+
         return [
-            'start' => fake()->dateTimeBetween('now', '+6 months'),
+            'start' => $randomDateTime,
             'duration' => fake()->randomElement([60,90,120]),
             'capacity' => rand(6,15),
             'room_id' => rand(1,3),

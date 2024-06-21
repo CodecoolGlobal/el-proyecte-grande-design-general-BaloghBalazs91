@@ -115,7 +115,7 @@ class DatabaseSeeder extends Seeder
 
         $trainees = User::query()->where('role', 'user')->get();
 
-        Training::factory(40)->create()->each(function($training) {
+        Training::factory(1000)->create()->each(function($training) {
             $trainees = DB::table('users')
                 ->where('role', 'user')
                 ->inRandomOrder()
