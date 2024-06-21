@@ -15,12 +15,13 @@
         <div class="row g-2">
             @foreach ($trainings as $training)
                 <x-training-card
-                    :trainer="$training->trainer->name"
-                    :training_method="$training->trainingMethod->name"
-                    :start="$training->start"
-                    :id="$training->id"
-                    :capacity="$training->capacity"
-                    :number_of_participants="count($training->trainees)">
+                    :training="$training">
+{{--                    :trainer="$training->trainer->name"--}}
+{{--                    :training_method="$training->trainingMethod->name"--}}
+{{--                    :start="$training->start"--}}
+{{--                    :id="$training->id"--}}
+{{--                    :capacity="$training->capacity"--}}
+{{--                    :number_of_participants="$training->trainees_count">--}}
                 </x-training-card>
             @endforeach
         </div>

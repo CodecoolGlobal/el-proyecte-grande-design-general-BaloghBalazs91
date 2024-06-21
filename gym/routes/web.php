@@ -58,7 +58,16 @@ Route::controller(TrainingController::class)->group(function () {
         ->can('edit', 'training');
     Route::patch('/trainings/{training}',  'update');
     Route::delete('/trainings/{training}',  'destroy');
-    Route::get('trainings/book/{userId}/{trainingId}', 'joinTrainingById');
+
+    Route::patch('trainings/book/{user}/{training}', 'joinTrainingById')
+        ->name('joinTrainingById')
+        ->middleware('auth')
+        ->can('join', 'training');
+
+    Route::patch('trainings/cancel/{user}/{training}', 'cancelTrainingById')
+        ->name('cancelTrainingById')
+        ->middleware('auth')
+        ->can('cancel', 'training');
 });
 
 // Trainers
@@ -71,4 +80,6 @@ Route::controller(TrainerController::class)->group(function () {
     Route::patch('trainers/{trainer}', 'update');
     Route::delete('trainers/{trainer}', 'destroy');
 });
+
+
 

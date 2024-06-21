@@ -32,12 +32,13 @@
             <div class="row g-2">
                 @foreach($training_method->trainings as $training)
                     <x-training-card
-                        start="{{ $training->start }}"
-                        trainer="{{ $training->trainer->name }}"
-                        training_method="{{ $training_method->name }}"
-                        id="{{ $training->id }}"
-                        capacity="{{ $training->capacity }}"
-                        number_of_participants="{{ $training->trainees_count }}">
+                        :training="$training">
+{{--                        start="{{ $training->start }}"--}}
+{{--                        trainer="{{ $training->trainer->name }}"--}}
+{{--                        training_method="{{ $training_method->name }}"--}}
+{{--                        id="{{ $training->id }}"--}}
+{{--                        capacity="{{ $training->capacity }}"--}}
+{{--                        number_of_participants="{{ $ }}">--}}
                     </x-training-card>
                 @endforeach
             </div>

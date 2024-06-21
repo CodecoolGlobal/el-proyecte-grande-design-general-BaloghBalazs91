@@ -32,12 +32,15 @@ class TrainingMethodController extends Controller
             'trainings' => function ($query) {
                 $query->where('start', '>=', Carbon::now())
                     ->whereNotNull('trainer_id')
-                    ->with('trainer')
-                    ->withCount('trainees')
+                    ->with(['trainer', 'trainees' => function ($query) {
+                        $query->select('users.id');
+                    }])
                     ->withCount('trainees')
                     ->orderBy('start');
             }
         ])->find($trainingMethod->id);
+
+        //return response()->json($training_method);
 
         //return response()->json($training_method);
         return view('training-methods.show', ['training_method' => $training_method]);
