@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\TrainerRepository\TrainerRepository;
+use App\Repositories\TrainerRepository\TrainerRepositoryInterface;
+use App\Repositories\TrainingMethodRepository\TrainingMethodRepository;
+use App\Repositories\TrainingMethodRepository\TrainingMethodRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->bind(TrainerRepositoryInterface::class, TrainerRepository::class);
+        $this->app->bind(TrainingMethodRepositoryInterface::class, TrainingMethodRepository::class);
     }
 }
