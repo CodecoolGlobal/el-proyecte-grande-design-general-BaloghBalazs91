@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\TrainingMethod;
 use App\Models\User;
+use App\Repositories\TrainingMethodRepository\TrainingMethodRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TrainingMethodController extends Controller
 {
+    public function __construct(private TrainingMethodRepositoryInterface $trainingMethodRepository)
+    {
+    }
+
     public function index()
     {
-        $training_methods = TrainingMethod::all() ?? [];
+        $training_methods = $this->trainingMethodRepository->index();
         return view('training-methods.index', ['training_methods' => $training_methods]);
     }
 
@@ -24,27 +29,7 @@ class TrainingMethodController extends Controller
 
     public function show(TrainingMethod $trainingMethod)
     {
-        $training_method = TrainingMethod::with([
-            'trainers' => function($query) {
-                $query->with(['trainingMethods' => function ($subQuery) {
-                    $subQuery->select('name');
-                }]);
-            },
-            'trainings' => function ($query) {
-                $query->where('start', '>=', Carbon::now())
-                    ->whereNotNull('trainer_id')
-                    ->withCount('trainees')
-                    ->with(['trainer', 'trainees' => function ($query) {
-                        $query->select('users.id');
-                    }])
-                    ->withCount('trainees')
-                    ->orderBy('start');
-            }
-        ])->find($trainingMethod->id);
-
-        //return response()->json($training_method);
-
-        //return response()->json($training_method);
+        $training_method = $this->trainingMethodRepository->show($trainingMethod);
         return view('training-methods.show', ['training_method' => $training_method]);
     }
 
@@ -67,15 +52,13 @@ class TrainingMethodController extends Controller
             $url = Storage::url($imagePath);
         }
 
-        $trainingMethod = TrainingMethod::create([
-            'name' => request('name'),
-            'description' => request('description'),
-            'image' => $fileName
-        ]);
+        $trainingMethod->name = request('name');
+        $trainingMethod->description = request('description');
+        $trainingMethod->image = $fileName;
 
+        $trainers = request('trainers');
 
-
-        $trainingMethod->trainers()->attach(request('trainers'));
+        $this->trainingMethodRepository->store($trainingMethod, $trainers);
 
         return redirect('/training-methods');
     }
@@ -101,13 +84,11 @@ class TrainingMethodController extends Controller
             'trainers.*' => 'exists:App\Models\User,id',
         ]);
 
-        $trainingMethod->update([
-            'name' => request('name'),
-            'description' => request('description'),
-            'image' => 'training-method-aerobik-card.jpg'
-        ]);
+        $trainingMethod->name = request('name');
+        $trainingMethod->name = request('description');
+        $trainers = request('trainers');
 
-        $trainingMethod->trainers()->sync(request('trainers'));
+        $this->trainingMethodRepository->update($trainingMethod, $trainers);
         return redirect('/training-methods');
     }
 
@@ -116,12 +97,4 @@ class TrainingMethodController extends Controller
         $trainingMethod->delete();
         return redirect('/training-methods');
     }
-    public function getTrainersById($id)
-    {
-        $training_methods = TrainingMethod::query()->find($id);
-        $trainers = [];
-        //$training_methods->
-    }
-
-
 }
