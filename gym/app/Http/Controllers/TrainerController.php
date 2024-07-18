@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Training;
 use App\Models\User;
+use App\Repositories\TrainerRepository\TrainerRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TrainerController extends UserController
 {
+    public function __construct(private TrainerRepositoryInterface $trainerRepository)
+    {
+    }
 
     public function index()
     {
-        $trainers = User::where('role', 'trainer')
-            ->with(['trainingMethods' => function ($query) {
-                $query->select('name');
-            }])
-            ->get();
-        //return response()->json($trainers);
+        $trainers = $this->trainerRepository->index();
         return view('trainers.index', ['trainers' => $trainers]);
     }
 
@@ -29,25 +28,12 @@ class TrainerController extends UserController
 
     public function show($id)
     {
-        $trainer = User::where('id', $id)
-            ->with(['trainingMethods' => function ($query)
-            {
-               $query->select('name');
-            }])
-            ->with(['trainings' => function ($query) {
-                $query->where('start', '>=', Carbon::now())
-                    ->with('trainingMethod')
-                    ->withCount('trainees')
-                    ->orderBy('start');
-            }])
-            ->get()->first();
-
+        $trainer = $this->trainerRepository->show($id);
 
         if ($trainer->role !== 'trainer') {
             abort(403);
         }
 
-        //return response()->json(['trainer' => $trainer]);
         return view('trainers.show', ['trainer' => $trainer]);
     }
 
