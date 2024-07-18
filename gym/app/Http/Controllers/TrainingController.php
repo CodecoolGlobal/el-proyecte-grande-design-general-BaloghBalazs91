@@ -9,6 +9,7 @@ use App\Models\Training;
 use App\Models\TrainingMethod;
 use App\Models\User;
 use App\Repositories\TrainingRepository;
+use App\Repositories\TrainingRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -18,12 +19,12 @@ use Illuminate\Support\Facades\Mail;
 class TrainingController extends Controller
 {
 
-    public function __construct(protected TrainingRepository $trainingRepository)
+    public function __construct(protected TrainingRepositoryInterface $trainingRepository)
     {}
 
     public function indexByWeek(Request $request)
     {
-        [$trainings, $period] = $this->trainingRepository->getTrainingsByWeek($request);
+        [$trainings, $period] = $this->trainingRepository->getTrainingsByWeek($request->query('week'));
         return view('trainings.index', ['trainings' => $trainings, 'week' => (int)$request->query('week'), 'period' => $period ]);
     }
 
@@ -31,10 +32,7 @@ class TrainingController extends Controller
 
     public function create()
     {
-        $training_methods = TrainingMethod::all();
-        $rooms = Room::all();
-        $trainers = User::where('role', 'trainer')->with('trainingMethods:id')->get()
-        ;
+        [$training_methods, $rooms, $trainers] = $this->trainingRepository->createTraining();
 
         //return response()->json($trainers);
         return view('trainings.create', [
@@ -45,13 +43,8 @@ class TrainingController extends Controller
 
     public function show(Training $training)
     {
-        $training = Training::with('trainingMethod')
-            ->with('trainer')
-            ->with('trainees')
-            ->with('room')
-            ->whereNotNull('trainer_id')
-            ->find($training->id);
-        Log::info($training);
+        $training = $this->trainingRepository->showTraining($training);
+
 
         //return response()->json($training);
         return view('trainings.show', ['training' => $training]);
@@ -59,39 +52,14 @@ class TrainingController extends Controller
 
     public function store(Training $training)
     {
-        request()->validate([
-            'start' => 'required',
-            'duration' => 'required',
-            'room_id' => 'required',
-            'capacity' => 'required',
-            'training_method_id' => 'required',
-            'trainer_id' => 'required',
-        ]);
-
-        Training::create([
-            'start' => request('start'),
-            'duration' => request('duration'),
-            'room_id' => request('room_id'),
-            'capacity' => request('capacity'),
-            'training_method_id' => request('training_method_id'),
-            'trainer_id' => request('trainer_id'),
-        ]);
-        return redirect('/trainings');
+        $this->trainingRepository->storeTraining($training);
+        return redirect('/trainings?week=0');
     }
 
     public function edit(Training $training)
     {
+        [$training, $training_methods, $rooms, $trainers] = $this->trainingRepository->editTraining($training);
         Gate::authorize('edit', $training);
-
-        $training = Training::with('trainingMethod')
-            ->with('trainer')
-            ->with('trainees')
-            ->with('room')
-            ->find($training->id);
-
-        $training_methods = TrainingMethod::all();
-        $rooms = Room::all();
-        $trainers = User::where('role', 'trainer')->get();
 
         return view('trainings.edit', [
             'training' => $training,
@@ -102,35 +70,17 @@ class TrainingController extends Controller
 
     public function update(Training $training)
     {
+        $training = $this->trainingRepository->updateTraining($training);
         Gate::authorize('edit', $training);
 
-        request()->validate([
-            'start' => 'required',
-            'duration' => 'required',
-            'room_id' => 'required',
-            'capacity' => 'required',
-            'training_method_id' => 'required',
-            'trainer_id' => 'required',
-        ]);
-
-        $update = $training->update([
-            'start' => request('start'),
-            'duration' => request('duration'),
-            'room_id' => request('room_id'),
-            'capacity' => request('capacity'),
-            'training_method_id' => request('training_method_id'),
-            'trainer_id' => request('trainer_id'),
-        ]);
-
-        return redirect('/trainings');
+        return redirect('/trainings?week=0');
     }
 
     public function destroy(Training $training)
     {
-        $training->delete();
-        Log::info('Deleted training with id: ' . $training->id);
+        $this->trainingRepository->deleteTraining($training);
 
-        return redirect('/trainings');
+        return redirect('/trainings?week=0');
     }
 
 //    public function getByUserId(int $user_id)
@@ -143,23 +93,7 @@ class TrainingController extends Controller
 //    }
 
     public function joinTrainingById(User $user, Training $training){
-        if ($training === null || $user === null) {
-            return response()->json(['message' => 'Training or user not found.'], 404);
-        }
-        if ($training->capacity<=count($training->trainees)){
-            return response()->json(['message' => 'There is no available slot on this training!'], 422);
-        }
-
-        $isAlreadyParticipating = $training->trainees->contains('pivot.trainee_id', $user->id);
-        if ($isAlreadyParticipating) {
-            return response()->json(['message' => 'User is already participating in this training.'], 422);
-        }
-
-        $training->trainees()->attach($user->id);
-
-        Mail::to($training->trainer->email)->send(
-            new TraineeJoined($user, $training)
-        );
+        $this->trainingRepository->joinTrainingById($user, $training);
 
         echo '<script>alert("Successfully joined the training.");
             window.location.href="/trainings";</script>';
@@ -167,11 +101,7 @@ class TrainingController extends Controller
 
     public function cancelTrainingById(User $user, Training $training)
     {
-        if ($training === null || $user === null) {
-            return response()->json(['message' => 'Training or user not found.'], 404);
-        }
-
-        $trainees = $training->trainees->pluck('id')->toArray();
+        $trainees = $this->trainingRepository->getTraniees($user, $training);
 
         if (in_array($user->id, $trainees)) {
 
