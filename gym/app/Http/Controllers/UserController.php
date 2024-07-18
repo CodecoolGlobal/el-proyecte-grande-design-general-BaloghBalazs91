@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mail;
+//use App\Models\Mail;
 use App\Models\User;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
@@ -12,9 +12,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\UserRepositoryInterface;
 
 class UserController extends Controller
 {
+    public function __construct(private UserRepositoryInterface $userRepository)
+    {
+    }
+
     public function login(Request $request)
     {
         $credentials = request()->validate([
@@ -49,12 +54,15 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        DB::table('users')->insert([
+        $userDetails = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
             'role' => "user"
-        ]);
+        ];
+
+        $this->userRepository->createUser($userDetails);
+
 
         return view('home');
     }
@@ -73,8 +81,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::all() ?? [];
-        return view('users.index',['users' => $users]);
+        $users = $this->userRepository->getAllUsers() ?? [];
+        return view('users.index', ['users' => $users]);
     }
 
 
@@ -99,11 +107,14 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $newUser = User::create([
+        $newUser = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,]);
+            'password' => $request->password,
+            'role' => $request->role
+        ];
+
+        $this->userRepository->createUser($newUser);
 
         return response()->json(['message'=>'User created successfully'],201);
     }
@@ -118,7 +129,6 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -130,31 +140,28 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        if($request->old_password){
-            if(!Hash::check($request->old_password, $user->password)){
-                return response()->json(['message'=>'Old password is incorrect'],401);
+
+        $newDetails = $request->all();
+
+        if ($request->old_password) {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json(['message' => 'Old password is incorrect'], 401);
             }
-            if($request->new_password1===$request->new_password2){
-            $user->password = Hash::make($request->new_password1);
-            }else{
-                return response()->json(['message'=>'New Passwords do not match'],401);
+            if ($request->new_password1 === $request->new_password2) {
+                $newDetails['password'] = $request->new_password1;
+            } else {
+                return response()->json(['message' => 'New Passwords do not match'], 401);
             }
         }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            //'password' => $request->password ? Hash::make($request->password) : $user->password,
-            'message' => $request->message,
-            'role' => $request->role,
-        ]);
+        $this->userRepository->updateUser($user, $newDetails);
 
-        return redirect('/user/profile');
+        return redirect('user.profile');
     }
 
     public function destroy(User $user)
     {
-        $user->delete();
+        $this->userRepository->deleteUser($user);
 
         return redirect('/users');
     }
