@@ -11,7 +11,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**
@@ -19,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(TrainingRepositoryInterface::class, TrainingRepository::class);
     }
 }
