@@ -2,53 +2,169 @@
 
 namespace App\Http\Controllers;
 
+//use App\Models\Mail;
 use App\Models\User;
+use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Auth\RequestGuard;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\UserRepositoryInterface;
 
 class UserController extends Controller
 {
-    public function login(Request $request)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
-        $user = User::where('name', $request->name)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => ['These credentials do not match our records.']
-            ], 404);
-        }
-
-        $token = $user->createToken('my-app-token')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return response($response, 201);
     }
 
-    public function register(Request $request)
+    public function login(Request $request)
+    {
+        $credentials = request()->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+            $user->createToken('my-app-token')->plainTextToken;
+
+            return view('users.profile', compact('user'));
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+    public function logout(Request $request){
+        Auth::logout();
+
+        return redirect('/');
+    }
+
+    public function  registerTrainee(Request $request)
     {
         // Validate the incoming request data
+        request()->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $userDetails = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => "user"
+        ];
+
+        $this->userRepository->createUser($userDetails);
+
+
+        return view('home');
+    }
+
+
+    public function profile()
+    {
+        $user = Auth::user();
+        Log::info($user);
+        if(Auth::check()){
+        return view('users.profile', compact('user'));
+        }
+        return response()->json(['message'=>"Unauthorized"],401);
+    }
+
+
+    public function index()
+    {
+        $users = $this->userRepository->getAllUsers() ?? [];
+        return view('users.index', ['users' => $users]);
+    }
+
+
+
+
+    public function create()
+    {
+        return view('users.create');
+    }
+
+
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'role' => 'required|string|in:user,admin,trainer'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        DB::table('users')->insert([
+        $newUser = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
+            'role' => $request->role
+        ];
+
+        $this->userRepository->createUser($newUser);
+
+        return response()->json(['message'=>'User created successfully'],201);
+    }
+
+
+    public function edit(User $user)
+    {
+
+       return view("users.edit",['user'=> $user]);
+    }
+
+
+    public function update(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+            'message' => 'nullable|string',
+            'role' => 'required|string|in:user,admin,trainer',
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $newDetails = $request->all();
+
+        if ($request->old_password) {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json(['message' => 'Old password is incorrect'], 401);
+            }
+            if ($request->new_password1 === $request->new_password2) {
+                $newDetails['password'] = $request->new_password1;
+            } else {
+                return response()->json(['message' => 'New Passwords do not match'], 401);
+            }
+        }
+
+        $this->userRepository->updateUser($user, $newDetails);
+
+        return redirect('user.profile');
     }
+
+    public function destroy(User $user)
+    {
+        $this->userRepository->deleteUser($user);
+
+        return redirect('/users');
+    }
+
+
 }

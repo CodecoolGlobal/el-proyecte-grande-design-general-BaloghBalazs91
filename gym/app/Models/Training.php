@@ -11,7 +11,6 @@ class Training extends Model
 {
     use HasFactory;
     protected $fillable = [
-
         'start',
         'duration',
         'trainer_id',

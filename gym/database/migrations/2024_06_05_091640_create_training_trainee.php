@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('training_trainee', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class, 'trainee_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignIdFor(\App\Models\Training::class, 'training_id')->constrained('trainings')->cascadeOnDelete();
+            $table
+                ->foreignIdFor(\App\Models\User::class, 'trainee_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table
+                ->foreignIdFor(\App\Models\Training::class, 'training_id')
+                ->constrained('trainings')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
